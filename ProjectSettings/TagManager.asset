@@ -11,10 +11,10 @@ TagManager:
   - 
   - Water
   - UI
+  - bush
   - 
   - 
-  - 
-  - 
+  - gravestones
   - 
   - 
   - 
@@ -40,4 +40,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: background
+    uniqueID: 1347479367
+    locked: 0
+  - name: second background
+    uniqueID: 482903763
+    locked: 0
+  - name: graves
+    uniqueID: 44003085
     locked: 0

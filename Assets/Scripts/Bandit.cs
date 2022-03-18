@@ -6,37 +6,38 @@ using System.Collections;
 public class Bandit : MonoBehaviour {
 
     [SerializeField] 
-    private float speed = 4.0f;
+    private float speed = 5.0f;
     [SerializeField] 
     private float jumpForce = 7.5f;
 
     private Animator animator;
     private Rigidbody2D body2d;
     private Sensor_Bandit groundSensor;
-    private bool grounded = false;
     private bool combatIdle = false;
     private bool isDead = false;
 
     // Use this for initialization
-    void Start () {
+    void Start () 
+    {
         animator = GetComponent<Animator>();
         body2d = GetComponent<Rigidbody2D>();
         groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_Bandit>();
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         //transform.localScale = fixScale;
 
         //Check if character just landed on the ground
-        if (!grounded && groundSensor.State()) {
-            grounded = true;
-            animator.SetBool("Grounded", grounded);
+        if (!animator.GetBool("Grounded") && groundSensor.State())
+        {
+            animator.SetBool("Grounded", true);
         }
 
         //Check if character just started falling
-        if(animator.GetBool("Grounded") && !groundSensor.State()) {
-            grounded = false;
+        if (animator.GetBool("Grounded") && !groundSensor.State())
+        {
             animator.SetBool("Grounded", false);
         }
 
@@ -45,7 +46,9 @@ public class Bandit : MonoBehaviour {
 
         // Swap direction of sprite depending on walk direction
         if (inputX > 0)
+        {
             transform.localScale = new Vector3(-1.5f, 1.5f, 1.0f);
+        }
         else if (inputX < 0)
             transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
 
@@ -58,10 +61,14 @@ public class Bandit : MonoBehaviour {
         // -- Handle Animations --
         //Death
         if (Input.GetKeyDown("e")) {
-            if(!isDead)
+            if (!isDead)
+            {
                 animator.SetTrigger("Death");
+            }
             else
+            {
                 animator.SetTrigger("Recover");
+            }
 
             isDead = !isDead;
         }
@@ -80,11 +87,10 @@ public class Bandit : MonoBehaviour {
             combatIdle = !combatIdle;
 
         //Jump
-        else if (Input.GetKeyDown("space") && grounded) 
+        else if (Input.GetKeyDown("space") && animator.GetBool("Grounded")) 
         {
             animator.SetTrigger("Jump");
-            grounded = false;
-            animator.SetBool("Grounded", grounded);
+            animator.SetBool("Grounded", false);
             body2d.velocity = new Vector2(body2d.velocity.x, jumpForce);
             groundSensor.Disable(0.2f);
         }
@@ -99,14 +105,12 @@ public class Bandit : MonoBehaviour {
         else if (combatIdle)
         {
             animator.SetInteger("AnimState", 1);
-
         }
 
         //Idle
         else
         {
             animator.SetInteger("AnimState", 0);
-
         }
     }
 }
