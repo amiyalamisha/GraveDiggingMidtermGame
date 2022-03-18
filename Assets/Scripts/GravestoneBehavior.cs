@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GravestoneBehavior : MonoBehaviour
 {
+    //Bandit banditAnimator Ani;
     // Start is called before the first frame update
     void Start()
     {
