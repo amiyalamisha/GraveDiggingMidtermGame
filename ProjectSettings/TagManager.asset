@@ -6,6 +6,9 @@ TagManager:
   tags:
   - grave
   - ladder
+  - Ewall
+  - WALL
+  - enemy
   layers:
   - Default
   - TransparentFX
