@@ -3,8 +3,8 @@ using System.Collections;
 
 // this code is referenced from the demo code that came with the unity asset i got from free asset store
 // it is not the exact same though
-public class Bandit : MonoBehaviour {
-
+public class Bandit : MonoBehaviour 
+{
     [SerializeField] 
     private float speed = 5.0f;
     [SerializeField] 
@@ -27,8 +27,6 @@ public class Bandit : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        //transform.localScale = fixScale;
-
         //Check if character just landed on the ground
         if (!animator.GetBool("Grounded") && groundSensor.State())
         {
@@ -50,9 +48,11 @@ public class Bandit : MonoBehaviour {
             transform.localScale = new Vector3(-1.5f, 1.5f, 1.0f);
         }
         else if (inputX < 0)
+        {
             transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
+        }
 
-        // Move
+        // Move horizontally
         body2d.velocity = new Vector2(inputX * speed, body2d.velocity.y);
 
         //Set AirSpeed in animator
@@ -60,7 +60,8 @@ public class Bandit : MonoBehaviour {
 
         // -- Handle Animations --
         //Death
-        if (Input.GetKeyDown("e")) {
+        if (Input.GetKeyDown("e"))
+        {
             if (!isDead)
             {
                 animator.SetTrigger("Death");
@@ -72,45 +73,63 @@ public class Bandit : MonoBehaviour {
 
             isDead = !isDead;
         }
-            
-        //Hurt
-        else if (Input.GetKeyDown("q"))
+        else if (Input.GetKeyDown("q"))         // getting hurt
+        {
             animator.SetTrigger("Hurt");
-
-        //Attack
-        else if(Input.GetMouseButtonDown(0)) {
+        }
+        else if (Input.GetMouseButtonDown(0))   // attacking
+        {
             animator.SetTrigger("Attack");
         }
-
-        //Change between idle and combat idle
-        else if (Input.GetKeyDown("f"))
+        else if (Input.GetKeyDown("f"))         // Change between idle and combat idle
+        { 
             combatIdle = !combatIdle;
-
-        //Jump
-        else if (Input.GetKeyDown("space") && animator.GetBool("Grounded")) 
+        }
+        else if (Input.GetKeyDown("space") && animator.GetBool("Grounded"))     // jumping
         {
             animator.SetTrigger("Jump");
             animator.SetBool("Grounded", false);
             body2d.velocity = new Vector2(body2d.velocity.x, jumpForce);
             groundSensor.Disable(0.2f);
         }
-
-        //Run
-        else if (Mathf.Abs(inputX) > Mathf.Epsilon)
+        else if (Mathf.Abs(inputX) > Mathf.Epsilon)     // running
         {
             animator.SetInteger("AnimState", 2);
         }
-
-        //Combat Idle
-        else if (combatIdle)
+        else if (combatIdle)                    // idle during combat
         {
             animator.SetInteger("AnimState", 1);
         }
-
-        //Idle
-        else
+        else                                    // normal idle
         {
             animator.SetInteger("AnimState", 0);
         }
+    }
+
+    // this is my collision code for interacting with other prefabs
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // bounces off gravestone
+        if (collision.gameObject.tag == "grave")
+        {
+            animator.SetTrigger("Jump");
+            animator.SetBool("Grounded", false);
+            body2d.velocity = new Vector2(body2d.velocity.x, jumpForce);
+            groundSensor.Disable(0.2f);
+        }
+        /*
+        if(collision.gameObject.tag == "ladder" && Input.GetKeyDown("w"))
+        {
+            Debug.Log("ladder");
+            float inputY = Input.GetAxis("Vertical");
+
+            body2d.gravityScale = 0;
+            body2d.velocity = new Vector2(body2d.velocity.y, inputY * speed);
+        }*/
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        body2d.gravityScale = 1;
     }
 }
