@@ -10,7 +10,7 @@ public class EnemyBehavior : MonoBehaviour
 
     public Bandit player;
     public Animator enemyAnimator;
-    public bool attackFinished = false;
+    public bool enemyAttackFinished = false;
 
     void Start()
     {
@@ -46,15 +46,16 @@ public class EnemyBehavior : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // enemy dies if hit by the player
-        if(collision.gameObject.tag == "Player" && player.playerAttack)
+        if(collision.gameObject.tag == "Player" && player.playerAttackFinished)
         {
+            player.playerAttackFinished = false;
             enemyAnimator.SetBool("dead", true);
         }
 
-        if (collision.gameObject.tag == "Player" && !player.playerAttack)
+        if (collision.gameObject.tag == "Player" && !player.playerAttackFinished)
         {
             // enemy attacks
-            attackFinished = false;
+            enemyAttackFinished = false;
             enemyAnimator.SetBool("attack", true);
         }
     }
@@ -62,19 +63,11 @@ public class EnemyBehavior : MonoBehaviour
     private void AfterAttackEvent()
     {
         enemyAnimator.SetBool("attack", false);
-        attackFinished = true;
+        enemyAttackFinished = true;
     }
 
     private void AfterDeadEvent()
     {
         Destroy(gameObject);
     }
-    /*
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (enemyAnimator.GetBool("attack"))
-        {
-            enemyAnimator.SetBool("attack", false);
-        }
-    }*/
 }
