@@ -11,22 +11,25 @@ public class Bandit : MonoBehaviour
     private float jumpForce = 7.5f;
 
     public Animator banditAnimator;
-    private Rigidbody2D body2d;
+    private Rigidbody2D rigidBody;
     private Sensor_Bandit groundSensor;
     private bool combatIdle = false;
     private bool isDead = false;
+    public bool playerAttack = false;
 
-    // Use this for initialization
+    [SerializeField]
+    private EnemyBehavior enemy;
+
     void Start () 
     {
         banditAnimator = GetComponent<Animator>();
-        body2d = GetComponent<Rigidbody2D>();
+        rigidBody = GetComponent<Rigidbody2D>();
         groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_Bandit>();
     }
 
-    // Update is called once per frame
     void Update()
     {
+        playerAttack = false;
         //Check if character just landed on the ground
         if (!banditAnimator.GetBool("Grounded") && groundSensor.State())
         {
@@ -53,10 +56,10 @@ public class Bandit : MonoBehaviour
         }
 
         // Move horizontally
-        body2d.velocity = new Vector2(inputX * speed, body2d.velocity.y);
+        rigidBody.velocity = new Vector2(inputX * speed, rigidBody.velocity.y);
 
         //Set AirSpeed in animator
-        banditAnimator.SetFloat("AirSpeed", body2d.velocity.y);
+        banditAnimator.SetFloat("AirSpeed", rigidBody.velocity.y);
 
         // -- Handle Animations --
         //Death
@@ -80,6 +83,7 @@ public class Bandit : MonoBehaviour
         else if (Input.GetMouseButtonDown(0))   // attacking
         {
             banditAnimator.SetTrigger("Attack");
+            playerAttack = true;
         }
         else if (Input.GetKeyDown("f"))         // Change between idle and combat idle
         { 
@@ -89,7 +93,7 @@ public class Bandit : MonoBehaviour
         {
             banditAnimator.SetTrigger("Jump");
             banditAnimator.SetBool("Grounded", false);
-            body2d.velocity = new Vector2(body2d.velocity.x, jumpForce);
+            rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpForce);
             groundSensor.Disable(0.2f);
         }
         else if (Mathf.Abs(inputX) > Mathf.Epsilon)     // running
@@ -109,14 +113,21 @@ public class Bandit : MonoBehaviour
     // this is my collision code for interacting with other prefabs
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        
         // bounces off gravestone
         if (collision.gameObject.tag == "grave")
         {
             banditAnimator.SetTrigger("Jump");
             banditAnimator.SetBool("Grounded", false);
-            body2d.velocity = new Vector2(body2d.velocity.x, jumpForce);
+            rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpForce);
             groundSensor.Disable(0.2f);
+        }
+
+        // if the enemy hits you
+        if (collision.gameObject.tag == "enemy" && enemy.attackFinished)
+        {
+            enemy.attackFinished = false;
+            banditAnimator.SetTrigger("Hurt");
+            // lose a life animation idk
         }
     }
 }
