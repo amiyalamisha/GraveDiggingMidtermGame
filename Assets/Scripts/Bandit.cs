@@ -15,9 +15,7 @@ public class Bandit : MonoBehaviour
     private Sensor_Bandit groundSensor;
     private bool combatIdle = false;
     private bool isDead = false;
-
-    private bool playerAttack = false;
-    public bool playerAttackFinished = false;
+    public bool playerAttack = false;
 
     [SerializeField]
     private EnemyBehavior enemy;
@@ -65,7 +63,6 @@ public class Bandit : MonoBehaviour
 
         // -- Handle Animations --
         //Death
-        // death brings you to end screen for end of level score
         if (Input.GetKeyDown("e"))
         {
             if (!isDead)
@@ -126,18 +123,11 @@ public class Bandit : MonoBehaviour
         }
 
         // if the enemy hits you
-        if (collision.gameObject.tag == "enemy" && enemy.enemyAttackFinished)
+        if (collision.gameObject.tag == "enemy" && enemy.attackFinished)
         {
-            // everytime you get hit you lose points
-            enemy.enemyAttackFinished = false;
+            enemy.attackFinished = false;
             banditAnimator.SetTrigger("Hurt");
             // lose a life animation idk
         }
-    }
-
-    private void AfterAttackEvent()
-    {
-        playerAttack = false;
-        playerAttackFinished = true;
     }
 }
