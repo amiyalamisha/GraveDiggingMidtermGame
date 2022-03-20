@@ -3,7 +3,11 @@ using System.Collections;
 
 /*
  * ----------------------------------------GENERAL INFO ABOUT MY GAME-------------------------------------------------
- * PUT FROM READ ME FILE
+ * This is a simple platformer about grave robbing and avoidng the angry spirits you rob
+ * To play use WASD or arrows to move, left click to attack, space to jump, spam space to climb ladders,
+ * and jump on gravestones to break them.
+ * 
+ * The coding techniques I used in this are tilemaps, animation controllers, animation events, animation states, and encapsulation.
  * */
 
 // this script is referenced from the demo code that came with the unity asset i got from free asset store

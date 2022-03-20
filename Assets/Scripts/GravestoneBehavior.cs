@@ -12,8 +12,6 @@ public class GravestoneBehavior : MonoBehaviour
     // collision with player breaks grave stone
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // breaking sound
-
         // destroys gravestone
         if(collision.gameObject.tag == "Player")
         {
