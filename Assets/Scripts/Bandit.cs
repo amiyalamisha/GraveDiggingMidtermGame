@@ -6,7 +6,7 @@ using System.Collections;
  * PUT FROM READ ME FILE
  * */
 
-// this script is referenced from the demo code that came with the unity asset i got from free asset store and it is the only code that is not entirely mine
+// this script is referenced from the demo code that came with the unity asset i got from free asset store
 // it is not the exact same though and is transformed to fit the dimensions of my game
 
 // this script acts as both a player controller and game manager
@@ -17,10 +17,12 @@ public class Bandit : MonoBehaviour
     [SerializeField] 
     private float jumpForce = 7.5f;
 
+    public GameManager manager;
     public Animator banditAnimator;
     private Rigidbody2D rigidBody;
     private Sensor_Bandit groundSensor;
-    private bool combatIdle = false;
+
+
     private bool isDead = false;
     public bool playerAttackFinished = false;
 
@@ -71,25 +73,7 @@ public class Bandit : MonoBehaviour
         banditAnimator.SetFloat("AirSpeed", rigidBody.velocity.y);
 
         // -- Handle Animations --
-        //Death
-        if (Input.GetKeyDown("e"))
-        {
-            if (!isDead)
-            {
-                banditAnimator.SetTrigger("Death");
-            }
-            else
-            {
-                banditAnimator.SetTrigger("Recover");
-            }
-
-            isDead = !isDead;
-        }
-        else if (Input.GetKeyDown("q"))         // getting hurt
-        {
-            banditAnimator.SetTrigger("Hurt");
-        }
-        else if (Input.GetMouseButtonDown(0))   // attacking
+        if (Input.GetMouseButtonDown(0))   // attacking
         {
             banditAnimator.SetTrigger("Attack");
             playerAttackFinished = false;
@@ -104,10 +88,6 @@ public class Bandit : MonoBehaviour
         else if (Mathf.Abs(inputX) > Mathf.Epsilon)     // running
         {
             banditAnimator.SetInteger("AnimState", 2);
-        }
-        else if (combatIdle)                    // idle during combat
-        {
-            banditAnimator.SetInteger("AnimState", 1);
         }
         else                                    // normal idle
         {
@@ -141,15 +121,23 @@ public class Bandit : MonoBehaviour
     // called from the GravestoneBehavior Script
     public void RobbingScore()
     {
-        score += 5;
-        gravesDestroyed += 1;
+        manager.ClearScore();
 
-        Debug.Log(score);
+        score += 10;
+        gravesDestroyed += 1;
     }
 
     // lets the enemy know the player exceuted attack animation
     private void AfterAttackEvent()
     {
         playerAttackFinished = true;
+    }
+
+    // after getting hurt animation
+    private void AfterHurtEvent()
+    {
+        manager.ClearScore();
+
+        score -= 2;
     }
 }

@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// this script also came with the bandit demo and is therefore not my own
+
+// specifically used to know when the player is exactly touching ground
 public class Sensor_Bandit : MonoBehaviour {
 
     private int m_ColCount = 0;

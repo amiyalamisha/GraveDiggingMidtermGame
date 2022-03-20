@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// total gravestones: 25
+// this is also my own code
 public class GravestoneBehavior : MonoBehaviour
 {
+    // total gravestones in level: 25
+
     public Bandit player;
 
     // collision with player breaks grave stone
