@@ -8,8 +8,14 @@ public class GameManager : MonoBehaviour
 {
     public Bandit player;
 
+    //public AudioSource musicSource;
     public int gameScore;
     public TextMeshProUGUI scoreText;
+
+    void Start ()
+    {
+        //musicSource.playOnAwake = true;
+    }
 
     void Update()
     {
