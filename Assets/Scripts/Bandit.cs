@@ -6,7 +6,7 @@ using System.Collections;
  * PUT FROM READ ME FILE
  * */
 
-// this script is referenced from the demo code that came with the unity asset i got from free asset store
+// this script is referenced from the demo code that came with the unity asset i got from free asset store and it is the only code that is not entirely mine
 // it is not the exact same though and is transformed to fit the dimensions of my game
 
 // this script acts as both a player controller and game manager
