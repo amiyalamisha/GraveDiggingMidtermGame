@@ -1,8 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// this code is referenced from the demo code that came with the unity asset i got from free asset store
-// it is not the exact same though
+/*
+ * ----------------------------------------GENERAL INFO ABOUT MY GAME-------------------------------------------------
+ * PUT FROM READ ME FILE
+ * */
+
+// this script is referenced from the demo code that came with the unity asset i got from free asset store
+// it is not the exact same though and is transformed to fit the dimensions of my game
+
+// this script acts as both a player controller and game manager
 public class Bandit : MonoBehaviour 
 {
     [SerializeField] 
@@ -15,10 +22,13 @@ public class Bandit : MonoBehaviour
     private Sensor_Bandit groundSensor;
     private bool combatIdle = false;
     private bool isDead = false;
-    public bool playerAttack = false;
+    public bool playerAttackFinished = false;
 
     [SerializeField]
     private EnemyBehavior enemy;
+
+    public int score = 0;
+    public int gravesDestroyed = 0;
 
     void Start () 
     {
@@ -29,7 +39,6 @@ public class Bandit : MonoBehaviour
 
     void Update()
     {
-        playerAttack = false;
         //Check if character just landed on the ground
         if (!banditAnimator.GetBool("Grounded") && groundSensor.State())
         {
@@ -83,11 +92,7 @@ public class Bandit : MonoBehaviour
         else if (Input.GetMouseButtonDown(0))   // attacking
         {
             banditAnimator.SetTrigger("Attack");
-            playerAttack = true;
-        }
-        else if (Input.GetKeyDown("f"))         // Change between idle and combat idle
-        { 
-            combatIdle = !combatIdle;
+            playerAttackFinished = false;
         }
         else if (Input.GetKeyDown("space") && banditAnimator.GetBool("Grounded"))     // jumping
         {
@@ -123,11 +128,28 @@ public class Bandit : MonoBehaviour
         }
 
         // if the enemy hits you
-        if (collision.gameObject.tag == "enemy" && enemy.attackFinished)
+        if (collision.gameObject.tag == "enemy" && enemy.enemyAttackFinished)
         {
-            enemy.attackFinished = false;
+            enemy.enemyAttackFinished = false;
             banditAnimator.SetTrigger("Hurt");
-            // lose a life animation idk
+
+            // score lost
         }
+    }
+
+    // function to add to the score when a grave is robbed
+    // called from the GravestoneBehavior Script
+    public void RobbingScore()
+    {
+        score += 5;
+        gravesDestroyed += 1;
+
+        Debug.Log(score);
+    }
+
+    // lets the enemy know the player exceuted attack animation
+    private void AfterAttackEvent()
+    {
+        playerAttackFinished = true;
     }
 }

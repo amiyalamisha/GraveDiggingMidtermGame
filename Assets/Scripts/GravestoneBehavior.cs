@@ -2,29 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// total gravestones: 25
 public class GravestoneBehavior : MonoBehaviour
 {
-    //Bandit banditAnimator Ani;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public Bandit player;
 
     // collision with player breaks grave stone
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // breaking particle effect
+        // breaking sound
 
         // destroys gravestone
         if(collision.gameObject.tag == "Player")
         {
+            // calls score function to add to the score
+            player.RobbingScore();
+
+            // then the game object is immediately destroyed
             Destroy(gameObject);
         }
     }

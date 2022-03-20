@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// this is my own enemy behavior code with some reference from my bandit movements
 public class EnemyBehavior : MonoBehaviour
 {
     [SerializeField]
@@ -10,12 +11,11 @@ public class EnemyBehavior : MonoBehaviour
 
     public Bandit player;
     public Animator enemyAnimator;
-    public bool attackFinished = false;
+    public bool enemyAttackFinished = false;
 
     void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
-
     }
 
     void Update()
@@ -36,45 +36,42 @@ public class EnemyBehavior : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // will turn again if they hit a hidden enemy barrier
+        // will turn and bounce off if they hit a hidden enemy barrier
         if (collision.gameObject.tag == "Ewall")
         {
-            speed *= -1;
+            speed *= -1;        // reverses the speed
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // enemy dies if hit by the player
-        if(collision.gameObject.tag == "Player" && player.playerAttack)
+        if(collision.gameObject.tag == "Player" && player.playerAttackFinished)
         {
+            // the player attacking is done so now ther is no need for this to be true until they attack again
+            player.playerAttackFinished = false;
             enemyAnimator.SetBool("dead", true);
         }
 
-        if (collision.gameObject.tag == "Player" && !player.playerAttack)
+        // enemy automatically attacks if player doesn't attack first
+        if (collision.gameObject.tag == "Player" && !player.playerAttackFinished)
         {
-            // enemy attacks
-            attackFinished = false;
+            // the enemy attack animation is not finished yet
+            enemyAttackFinished = false;
             enemyAnimator.SetBool("attack", true);
         }
     }
 
+    // lets the player know the enemy exceuted attack animation
     private void AfterAttackEvent()
     {
         enemyAnimator.SetBool("attack", false);
-        attackFinished = true;
+        enemyAttackFinished = true;         // animation is now finished
     }
 
+    // destroys enemy object after death animation plays
     private void AfterDeadEvent()
     {
         Destroy(gameObject);
     }
-    /*
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (enemyAnimator.GetBool("attack"))
-        {
-            enemyAnimator.SetBool("attack", false);
-        }
-    }*/
 }
